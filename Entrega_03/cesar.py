@@ -1,16 +1,26 @@
-"""Cifrado César extendido a un alfabeto de 74 caracteres."""
+"""Cifrado César extendido a un alfabeto de 73 caracteres."""
 import math
 import unicodedata
 
 ALFABETO = ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            "0123456789_-.áéíóú?!¿¡")
+            "0123456789-.áéíóú?!¿¡")
 N = len(ALFABETO)
 _INDICE = {c: i for i, c in enumerate(ALFABETO)}
+
+
+_TILDES = {"´a": "á", "´e": "é", "´i": "í", "´o": "ó", "´u": "ú"}
+
+
+def unir_tildes(mensaje: str) -> str:
+    for separada, junta in _TILDES.items():
+        mensaje = mensaje.replace(separada, junta)
+    return mensaje
 
 
 def _desplazar(mensaje: str, k: int) -> str:
     """Desplaza k posiciones cada carácter del alfabeto.
     Los caracteres fuera del alfabeto (espacios, comas, etc.) no cambian."""
+    mensaje = unir_tildes(mensaje)
     return "".join(
         ALFABETO[(_INDICE[c] + k) % N] if c in _INDICE else c for c in mensaje
     )
